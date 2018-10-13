@@ -26,7 +26,7 @@ def create_xml_test(filename):
     sqlQuery = ['< ![CDATA[' + sql + ']] >', ""]
 
     # 释放到前端的参数
-    report_parameter = [['regionCode', 'true', 'false', '区域代码', 'STRING', '100000', ['1', 'regionCode']], ]
+    report_parameters = [['regionCode', 'true', 'false', '区域代码', 'STRING', '100000', [['1', 'regionCode'], []]], []]
 
     # 新建xml文档对象
     xml = minidom.Document()
@@ -139,6 +139,45 @@ def create_xml_test(filename):
     # 释放到前端的参数
     report_parameters_node = xml.createElement('report-parameters')
     report.appendChild(report_parameters_node)
+    for idx, report_parameter in enumerate(report_parameters):
+        if report_parameter:
+            # report-parameter
+            report_parameter_node = xml.createElement('report-parameter')
+            report_parameter_node.setAttribute('name', report_parameter[0])
+            report_parameter_node.setAttribute('isVisible', report_parameter[1])
+            report_parameters_node.appendChild(report_parameter_node)
+
+            # label标签
+            r_label_node = xml.createElement('label')
+            r_label_node.setAttribute('isExpression', report_parameter[2])
+            report_parameter_node.appendChild(r_label_node)
+            r_label_text = xml.createTextNode(report_parameter[3])
+            r_label_node.appendChild(r_label_text)
+
+            # 默认值
+            r_data_type_node = xml.createElement('data-type')
+            report_parameter_node.appendChild(r_data_type_node)
+            r_data_type_text = xml.createTextNode(report_parameter[4])
+            r_data_type_node.appendChild(r_data_type_text)
+
+            # 默认值
+            r_default_value_node = xml.createElement('default-value')
+            report_parameter_node.appendChild(r_default_value_node)
+            r_default_value_text = xml.createTextNode(report_parameter[5])
+            r_default_value_node.appendChild(r_default_value_text)
+
+            targe_bindings_node = xml.createElement('target-bindings')
+            report_parameter_node.appendChild(targe_bindings_node)
+
+            # 绑定dataset 指定该参数的作用范围,映射到某个数据集的某些字段
+            for bindings in report_parameter[6]:
+                if bindings:
+                    target_binding = xml.createElement('target-binding')
+                    target_binding.setAttribute('id', bindings[0])
+                    target_binding.setAttribute('parameterName', bindings[1])
+                    targe_bindings_node.appendChild(target_binding)
+
+
 
     # 写好之后，就需要保存文档了
     f = open(filename + '.srdl', 'wb')
