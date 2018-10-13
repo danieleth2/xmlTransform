@@ -1,0 +1,226 @@
+<report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://www.sap.com/sme/occ/schema/report.xsd"
+        namespace="com.dzj"
+        id="ok_hospital_info_list" revision="1" height="2">
+    <title isExpression="false"></title>
+    <roles>
+        <role name="运营管理员" value="OPERATOR_ADMIN"/>
+        <role name="省总" value="MSL_LEADER"/>
+    </roles>
+    <description>医院列表数据</description>
+    <datasets>
+        <dataset id="1" data-source-type="NATIVE">
+            <label isExpression="false">医院列表数据</label>
+            <!-- 数据库查询参数 -->
+            <parameters>
+                <parameter name="regionCode">
+                    <data-type>STRING</data-type>
+                    <default-value>100000</default-value>
+                </parameter>
+                <parameter name="limit">
+                    <data-type>INTEGER</data-type>
+                    <default-value>10</default-value>
+                </parameter>
+                <parameter name="offset">
+                    <data-type>INTEGER</data-type>
+                    <default-value>0</default-value>
+                </parameter>
+                <parameter name="sort">
+                    <data-type>STRING</data-type>
+                    <default-value>registerDoctorCount</default-value>
+                </parameter>
+            </parameters>
+            <columns>
+                <column name="name">
+                    <label>医院名称</label>
+                    <data-type>STRING</data-type>
+                </column>
+                <column name="province">
+                    <label>省</label>
+                    <data-type>STRING</data-type>
+                </column>
+                <column name="city">
+                    <label>市</label>
+                    <data-type>STRING</data-type>
+                </column>
+                <column name="area">
+                    <label>地区</label>
+                    <data-type>STRING</data-type>
+                </column>
+                <column name="level">
+                    <label>等级</label>
+                    <data-type>STRING</data-type>
+                </column>
+                <column name="signedDoctorNum">
+                    <label>签约医生</label>
+                    <data-type>STRING</data-type>
+                </column>
+                <column name="registerDoctorCount">
+                    <label>注册医生</label>
+                    <data-type>STRING</data-type>
+                </column>
+                <column name="loginDoctorCount">
+                    <label>登录医生</label>
+                    <data-type>STRING</data-type>
+                </column>
+                <column name="peopleCount">
+                    <label>上线百姓</label>
+                    <data-type>STRING</data-type>
+                </column>
+                <column name="signedMslName">
+                    <label>签约MSL</label>
+                    <data-type>STRING</data-type>
+                </column>
+                <column name="serveMslName">
+                    <label>服务MSL</label>
+                    <data-type>STRING</data-type>
+                </column>
+                <column name="signedTime">
+                    <label>签约日期</label>
+                    <data-type>STRING</data-type>
+                </column>
+            </columns>
+            <query>
+                <text><![CDATA[
+     SELECT
+	h.NAME,
+    (SELECT rg.place_name from dzj.region rg where h.province_code = rg.place_code) as province,
+	(SELECT rg.place_name from dzj.region rg where h.city_code = rg.place_code) as city,
+	(SELECT rg.place_name from dzj.region rg where h.district_code = rg.place_code) as area,
+	h.level,
+	h.signed_doctor_num AS signedDoctorNum,
+	( SELECT count( 1 ) FROM doctor_info dz WHERE dz.hospital_id = h.id ) AS registerDoctorCount,
+	( SELECT count( 1 ) FROM user_first_login_record fd INNER JOIN doctor_info dd ON fd.user_id = dd.user_id WHERE dd.hospital_id = h.id ) AS loginDoctorCount,
+	(
+	SELECT
+		count( DISTINCT hcr.user_id )
+	FROM
+		dzj.health_consultant_relation hcr
+		INNER JOIN dzj.doctor_info di ON hcr.consultant_id = di.user_id
+	WHERE
+		hcr.relation_status = 'SIGNED'
+		AND di.hospital_id = h.id
+	) AS peopleCount,
+	h.signed_mslname AS signedMslName,
+	(
+	SELECT
+		group_concat(bm.name)
+	FROM
+		hospital_msl_relation hmr
+		INNER JOIN b_user bm ON hmr.msl_id = bm.id
+	WHERE
+		hmr.hospital_id = h.id
+		AND hmr.`status` = '1'
+	) AS serveMslName,
+	signed_time AS signedTime
+FROM
+	b_hospital h
+
+WHERE
+	({regionCode} !='100000' and (h.province_code = {regionCode} OR h.city_code = {regionCode} OR h.district_code = {regionCode}))
+	OR {regionCode} = '100000' ORDER BY 	case
+	when {sort} = 'signedDoctorNum' then signedDoctorNum
+	when {sort}='registerDoctorCount' then registerDoctorCount
+	when {sort}='loginDoctorCount' then loginDoctorCount
+	when {sort}='peopleCount' then peopleCount
+	end DESC limit {limit} offset {offset}
+  ]]>
+                </text>
+            </query>
+        </dataset>
+    </datasets>
+    <!-- 释放到前端的参数 -->
+    <report-parameters>
+
+        <!-- 定义报表参数 -->
+        <report-parameter name="regionCode" isVisible="true">
+            <label isExpression="false">区域代码</label>
+            <data-type>STRING</data-type>
+            <default-value>100000</default-value>
+            <!-- 指定该参数的作用范围,映射到某个数据集的某些字段 -->
+            <target-bindings>
+                <target-binding id="1" parameterName="regionCode"/>
+            </target-bindings>
+        </report-parameter>
+        <report-parameter name="limit" isVisible="true">
+            <label isExpression="false">分页大小</label>
+            <data-type>INTEGER</data-type>
+            <default-value>10</default-value>
+            <target-bindings>
+                <target-binding id="1" parameterName="limit"/>
+            </target-bindings>
+        </report-parameter>
+        <report-parameter name="offset" isVisible="true">
+            <label isExpression="false">起始位置</label>
+            <data-type>INTEGER</data-type>
+            <default-value>0</default-value>
+            <target-bindings>
+                <target-binding id="1" parameterName="offset"/>
+            </target-bindings>
+        </report-parameter>
+        <report-parameter name="sort" isVisible="true">
+            <label isExpression="false">根据某个字段排序</label>
+            <data-type>STRING</data-type>
+            <default-value>registerDoctorCount</default-value>
+            <target-bindings>
+                <target-binding id="1" parameterName="sort"/>
+            </target-bindings>
+        </report-parameter>
+    </report-parameters>
+    <sheet widget="table">
+        <table>
+            <declare-binding datasetid="1"/>
+            <columns>
+                <column>
+                    <label>医院名称</label>
+                    <dataset-column-name>name</dataset-column-name>
+                </column>
+                <column>
+                    <label>省</label>
+                    <dataset-column-name>province</dataset-column-name>
+                </column>
+                <column>
+                    <label>市</label>
+                    <dataset-column-name>city</dataset-column-name>
+                </column>
+                <column>
+                    <label>地区</label>
+                    <dataset-column-name>area</dataset-column-name>
+                </column>
+                <column>
+                    <label>等级</label>
+                    <dataset-column-name>level</dataset-column-name>
+                </column>
+                <column>
+                    <label>签约医生</label>
+                    <dataset-column-name>signedDoctorNum</dataset-column-name>
+                </column>
+                <column>
+                    <label>注册医生</label>
+                    <dataset-column-name>registerDoctorCount</dataset-column-name>
+                </column>
+                <column>
+                    <label>登录医生</label>
+                    <dataset-column-name>loginDoctorCount</dataset-column-name>
+                </column>
+                <column>
+                    <label>上线百姓</label>
+                    <dataset-column-name>peopleCount</dataset-column-name>
+                </column>
+                <column>
+                    <label>签约MSL</label>
+                    <dataset-column-name>signedMslName</dataset-column-name>
+                </column>
+                <column>
+                    <label>服务MSL</label>
+                    <dataset-column-name>serveMslName</dataset-column-name>
+                </column>
+                <column>
+                    <label>签约日期</label>
+                    <dataset-column-name>signedTime</dataset-column-name>
+                </column>
+            </columns>
+        </table>
+    </sheet>
+
+</report>

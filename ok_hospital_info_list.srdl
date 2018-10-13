@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report height="2" id="ok_hospital_info_list" namespace="com.dzj" revision="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.sap.com/sme/occ/schema/report.xsd">
+	<title isExpression="false">医院信息列表</title>
+	<roles>
+		<role name="运营管理员" value="OPERATOR_ADMIN"/>
+		<role name="省总" value="MSL_LEADER"/>
+	</roles>
+	<description>医院获取详细列表</description>
+	<datasets>
+		<dataset data-source-type="NATIVE" id="1">
+			<label isExpression="false">医院列表数据</label>
+			<parameters>
+				<parameter name="regionCode">
+					<data-type>STRING</data-type>
+					<default-value>100000</default-value>
+				</parameter>
+				<parameter name="limit">
+					<data-type>INTEGER</data-type>
+					<default-value>10</default-value>
+				</parameter>
+			</parameters>
+			<columns>
+				<column name="name">
+					<data-type>医院名称</data-type>
+					<label>STRING</label>
+				</column>
+				<column name="province">
+					<data-type>省</data-type>
+					<label>STRING</label>
+				</column>
+			</columns>
+		</dataset>
+		<dataset data-source-type="KYLIN" id="2">
+			<label isExpression="false">医院列表数据2</label>
+			<parameters/>
+			<columns/>
+		</dataset>
+	</datasets>
+	<element id="id1">
+		hello world
+		<tag data="tag data"/>
+	</element>
+</report>
