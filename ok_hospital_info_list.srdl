@@ -31,16 +31,7 @@
 			</columns>
 			<query>
 				<text>
-<![CDATA[< ![CDATA[select * from b_hospital]] >]]>				</text>
-			</query>
-		</dataset>
-		<dataset data-source-type="KYLIN" id="2">
-			<label isExpression="false">医院列表数据2</label>
-			<parameters/>
-			<columns/>
-			<query>
-				<text>
-<![CDATA[]]>				</text>
+<![CDATA[select * from b_hospital]]>				</text>
 			</query>
 		</dataset>
 	</datasets>
@@ -54,4 +45,19 @@
 			</target-bindings>
 		</report-parameter>
 	</report-parameters>
+	<sheet widget="table">
+		<table>
+			<declare-binding datasetid="1"/>
+			<columns>
+				<column>
+					<label>医院名称</label>
+					<dataset-column-name>name</dataset-column-name>
+				</column>
+				<column>
+					<label>省</label>
+					<dataset-column-name>province</dataset-column-name>
+				</column>
+			</columns>
+		</table>
+	</sheet>
 </report>

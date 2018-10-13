@@ -5,7 +5,7 @@ from collections import OrderedDict
 
 
 # 写入xml文档的方法
-def create_xml_test(filename):
+def create_report_xml(filename):
     # 输入参数
     report_id = filename
     title = '医院信息列表'
@@ -19,14 +19,14 @@ def create_xml_test(filename):
     # 4.parameter 数组 其中每个都有 name datatype default value
     # 5.columns 数组  其中每个都有 name label datatype
     dataset = [["1", 'NATIVE', '医院列表数据', [['regionCode', 'STRING', "100000"], ['limit', 'INTEGER', "10"]],
-                [['name', '医院名称', 'STRING'], ['province', '省', 'STRING']]],
-               ["2", 'KYLIN', '医院列表数据2', [], []]]
+                [['name', '医院名称', 'STRING'], ['province', '省', 'STRING']]]
+               ]
 
-    sql = 'select * from b_hospital'
-    sqlQuery = ['< ![CDATA[' + sql + ']] >', ""]
+
+    sqlQuery = ['select * from b_hospital']
 
     # 释放到前端的参数
-    report_parameters = [['regionCode', 'true', 'false', '区域代码', 'STRING', '100000', [['1', 'regionCode'], []]], []]
+    report_parameters = [['regionCode', 'true', 'false', '区域代码', 'STRING', '100000', [['1', 'regionCode']]]]
 
     # 新建xml文档对象
     xml = minidom.Document()
@@ -177,6 +177,37 @@ def create_xml_test(filename):
                     target_binding.setAttribute('parameterName', bindings[1])
                     targe_bindings_node.appendChild(target_binding)
 
+    # sheet 图标  暂时只支持table
+    sheet_node = xml.createElement('sheet')
+    sheet_node.setAttribute('widget', 'table')
+    report.appendChild(sheet_node)
+
+    for idx, tableValue in enumerate(dataset):
+        table_node = xml.createElement('table')
+        sheet_node.appendChild(table_node)
+        # table绑定的dataset
+        declare_binding = xml.createElement('declare-binding')
+        declare_binding.setAttribute('datasetid', tableValue[0])
+        table_node.appendChild(declare_binding)
+
+        # cloumns 所有的列
+        s_columns_node = xml.createElement('columns')
+        table_node.appendChild(s_columns_node)
+
+        for column in tableValue[4]:
+            s_column_node = xml.createElement('column')
+            s_columns_node.appendChild(s_column_node)
+
+            sc_label_node = xml.createElement('label')
+            s_column_node.appendChild(sc_label_node)
+            sc_label_text = xml.createTextNode(column[1])
+            sc_label_node.appendChild(sc_label_text)
+
+            dataset_column_name_node = xml.createElement('dataset-column-name')
+            s_column_node.appendChild(dataset_column_name_node)
+            dataset_column_name_text = xml.createTextNode(column[0])
+            dataset_column_name_node.appendChild(dataset_column_name_text)
+
 
 
     # 写好之后，就需要保存文档了
@@ -188,4 +219,4 @@ def create_xml_test(filename):
 
 if __name__ == '__main__':
     # 在当前目录下，创建1.xml
-    create_xml_test('ok_hospital_info_list')
+    create_report_xml('ok_hospital_info_list')
