@@ -82,48 +82,7 @@
             </columns>
             <query>
                 <text><![CDATA[
-     SELECT
-	h.NAME,
-    (SELECT rg.place_name from dzj.region rg where h.province_code = rg.place_code) as province,
-	(SELECT rg.place_name from dzj.region rg where h.city_code = rg.place_code) as city,
-	(SELECT rg.place_name from dzj.region rg where h.district_code = rg.place_code) as area,
-	h.level,
-	h.signed_doctor_num AS signedDoctorNum,
-	( SELECT count( 1 ) FROM doctor_info dz WHERE dz.hospital_id = h.id ) AS registerDoctorCount,
-	( SELECT count( 1 ) FROM user_first_login_record fd INNER JOIN doctor_info dd ON fd.user_id = dd.user_id WHERE dd.hospital_id = h.id ) AS loginDoctorCount,
-	(
-	SELECT
-		count( DISTINCT hcr.user_id )
-	FROM
-		dzj.health_consultant_relation hcr
-		INNER JOIN dzj.doctor_info di ON hcr.consultant_id = di.user_id
-	WHERE
-		hcr.relation_status = 'SIGNED'
-		AND di.hospital_id = h.id
-	) AS peopleCount,
-	h.signed_mslname AS signedMslName,
-	(
-	SELECT
-		group_concat(bm.name)
-	FROM
-		hospital_msl_relation hmr
-		INNER JOIN b_user bm ON hmr.msl_id = bm.id
-	WHERE
-		hmr.hospital_id = h.id
-		AND hmr.`status` = '1'
-	) AS serveMslName,
-	signed_time AS signedTime
-FROM
-	b_hospital h
 
-WHERE
-	({regionCode} !='100000' and (h.province_code = {regionCode} OR h.city_code = {regionCode} OR h.district_code = {regionCode}))
-	OR {regionCode} = '100000' ORDER BY 	case
-	when {sort} = 'signedDoctorNum' then signedDoctorNum
-	when {sort}='registerDoctorCount' then registerDoctorCount
-	when {sort}='loginDoctorCount' then loginDoctorCount
-	when {sort}='peopleCount' then peopleCount
-	end DESC limit {limit} offset {offset}
   ]]>
                 </text>
             </query>

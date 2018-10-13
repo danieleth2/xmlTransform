@@ -36,8 +36,4 @@
 			<columns/>
 		</dataset>
 	</datasets>
-	<element id="id1">
-		hello world
-		<tag data="tag data"/>
-	</element>
 </report>

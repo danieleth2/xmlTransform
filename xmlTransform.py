@@ -20,6 +20,8 @@ def create_xml_test(filename):
          [['name', '医院名称', 'STRING'], ['province', '省', 'STRING']]],
         ["2", 'KYLIN', '医院列表数据2', [], []]]
 
+    sqlQuery=["", ""]
+
     # 新建xml文档对象
     xml = minidom.Document()
 
@@ -122,18 +124,6 @@ def create_xml_test(filename):
 
 
 
-    text_node = xml.createElement('element')
-    text_node.setAttribute('id', 'id1')
-    report.appendChild(text_node)
-
-    # 给这个节点加入文本，文本也是一种节点
-    text = xml.createTextNode('hello world')
-    text_node.appendChild(text)
-
-    # 一个节点加了文本之后，还可以继续追加其他东西
-    tag = xml.createElement('tag')
-    tag.setAttribute('data', 'tag data')
-    text_node.appendChild(tag)
 
     # 写好之后，就需要保存文档了
     f = open(filename + '.srdl', 'wb')
