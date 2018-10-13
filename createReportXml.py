@@ -1,33 +1,9 @@
 # coding:utf-8
 from xml.dom import minidom
-import json
-from collections import OrderedDict
 
 
 # 写入xml文档的方法
-def create_report_xml(filename):
-    # 输入参数
-    report_id = filename
-    title = '医院信息列表'
-    # rolemap ={}
-
-    rolemap = [['运营管理员', 'OPERATOR_ADMIN'], ['省总', 'MSL_LEADER']]
-
-    description = '医院获取详细列表'
-
-    # 1.dataset 的id  2.数据来源  3.label标签名称
-    # 4.parameter 数组 其中每个都有 name datatype default value
-    # 5.columns 数组  其中每个都有 name label datatype
-    dataset = [["1", 'NATIVE', '医院列表数据', [['regionCode', 'STRING', "100000"], ['limit', 'INTEGER', "10"]],
-                [['name', '医院名称', 'STRING'], ['province', '省', 'STRING']]]
-               ]
-
-
-    sqlQuery = ['select * from b_hospital']
-
-    # 释放到前端的参数
-    report_parameters = [['regionCode', 'true', 'false', '区域代码', 'STRING', '100000', [['1', 'regionCode']]]]
-
+def create_report_xml(title_description, rolemap, dataset, sqlQuery, report_parameters):
     # 新建xml文档对象
     xml = minidom.Document()
 
@@ -38,7 +14,7 @@ def create_report_xml(filename):
     report.setAttribute('xmlns:xsi', "http://www.w3.org/2001/XMLSchema-instance")
     report.setAttribute('xsi:noNamespaceSchemaLocation', "http://www.sap.com/sme/occ/schema/report.xsd")
     report.setAttribute('namespace', "com.dzj")
-    report.setAttribute('id', report_id)
+    report.setAttribute('id', title_description[0])
     report.setAttribute('revision', "1")
     report.setAttribute('height', "2")
     xml.appendChild(report)
@@ -47,7 +23,7 @@ def create_report_xml(filename):
     title_node = xml.createElement('title')
     title_node.setAttribute('isExpression', 'false')
     report.appendChild(title_node)
-    title_text = xml.createTextNode(title)
+    title_text = xml.createTextNode(title_description[1])
     title_node.appendChild(title_text)
 
     # 报表权限控制
@@ -63,7 +39,7 @@ def create_report_xml(filename):
     # 报表描述
     description_node = xml.createElement('description')
     report.appendChild(description_node)
-    description = xml.createTextNode(description)
+    description = xml.createTextNode(title_description[2])
     description_node.appendChild(description)
 
     # 报表datasets
@@ -208,15 +184,38 @@ def create_report_xml(filename):
             dataset_column_name_text = xml.createTextNode(column[0])
             dataset_column_name_node.appendChild(dataset_column_name_text)
 
-
-
     # 写好之后，就需要保存文档了
-    f = open(filename + '.srdl', 'wb')
+    f = open(title_description[0] + '.srdl', 'wb')
 
     f.write(xml.toprettyxml(encoding='utf-8'))
     f.close()
 
 
+def createParameter():
+    # 输入参数
+
+    title_description = ['ok_hospital_info_list', '医院信息列表', '医院获取详细列表']
+
+    rolemap = [['运营管理员', 'OPERATOR_ADMIN'], ['省总', 'MSL_LEADER']]
+
+    # 1.dataset 的id  2.数据来源  3.label标签名称
+    # 4.parameter 数组 其中每个都有 name datatype default value
+    # 5.columns 数组  其中每个都有 name label datatype
+    dataset = [["1", 'NATIVE', '医院列表数据', [['regionCode', 'STRING', "100000"], ['limit', 'INTEGER', "10"]],
+                [['name', '医院名称', 'STRING'], ['province', '省', 'STRING']]]
+               ]
+
+    sqlQuery = ['select * from b_hospital']
+
+    # 释放到前端的参数
+    report_parameters = [['regionCode', 'true', 'false', '区域代码', 'STRING', '100000', [['1', 'regionCode']]]]
+
+
+    return title_description, rolemap, dataset, sqlQuery, report_parameters
+
+
 if __name__ == '__main__':
     # 在当前目录下，创建1.xml
-    create_report_xml('ok_hospital_info_list')
+
+    title_description, rolemap, dataset, sqlQuery, report_parameters = createParameter()
+    create_report_xml(title_description, rolemap, dataset, sqlQuery, report_parameters)
