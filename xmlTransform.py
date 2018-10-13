@@ -11,16 +11,22 @@ def create_xml_test(filename):
     title = '医院信息列表'
     # rolemap ={}
 
-    rolemap = {'运营管理员': 'OPERATOR_ADMIN', '省总': 'MSL_LEADER'}
+    rolemap = [['运营管理员', 'OPERATOR_ADMIN'], ['省总', 'MSL_LEADER']]
 
     description = '医院获取详细列表'
 
-    dataset = [
-        ["1", 'NATIVE', '医院列表数据', [['regionCode', 'STRING', "100000"], ['limit', 'INTEGER', "10"]],
-         [['name', '医院名称', 'STRING'], ['province', '省', 'STRING']]],
-        ["2", 'KYLIN', '医院列表数据2', [], []]]
+    # 1.dataset 的id  2.数据来源  3.label标签名称
+    # 4.parameter 数组 其中每个都有 name datatype default value
+    # 5.columns 数组  其中每个都有 name label datatype
+    dataset = [["1", 'NATIVE', '医院列表数据', [['regionCode', 'STRING', "100000"], ['limit', 'INTEGER', "10"]],
+                [['name', '医院名称', 'STRING'], ['province', '省', 'STRING']]],
+               ["2", 'KYLIN', '医院列表数据2', [], []]]
 
-    sqlQuery=["", ""]
+    sql = 'select * from b_hospital'
+    sqlQuery = ['< ![CDATA[' + sql + ']] >', ""]
+
+    # 释放到前端的参数
+    report_parameter = [['regionCode', 'true', 'false', '区域代码', 'STRING', '100000', ['1', 'regionCode']], ]
 
     # 新建xml文档对象
     xml = minidom.Document()
@@ -50,8 +56,8 @@ def create_xml_test(filename):
         report.appendChild(roles_node)
         for key in rolemap:
             role_node = xml.createElement('role')
-            role_node.setAttribute('name', key)
-            role_node.setAttribute('value', rolemap[key])
+            role_node.setAttribute('name', key[0])
+            role_node.setAttribute('value', key[1])
             roles_node.appendChild(role_node)
 
     # 报表描述
@@ -63,8 +69,8 @@ def create_xml_test(filename):
     # 报表datasets
     datasets_node = xml.createElement('datasets')
     report.appendChild(datasets_node)
-
-    for datasetValue in dataset:
+    # 获取单个dataset数值
+    for idx, datasetValue in enumerate(dataset):
         dataset_node = xml.createElement('dataset')
         datasets_node.appendChild(dataset_node)
 
@@ -105,28 +111,38 @@ def create_xml_test(filename):
 
         for columnsValue in datasetValue[4]:
             if columnsValue:
+                # 输出参数
                 column_node = xml.createElement('column')
                 columns_node.appendChild(column_node)
                 column_node.setAttribute('name', columnsValue[0])
-
+                # 数据类型
                 c_data_type_node = xml.createElement('data-type')
                 column_node.appendChild(c_data_type_node)
                 c_data_type_text = xml.createTextNode(columnsValue[1])
                 c_data_type_node.appendChild(c_data_type_text)
-
-
+                # label标签
                 c_label_node = xml.createElement('label')
                 column_node.appendChild(c_label_node)
                 c_label_text = xml.createTextNode(columnsValue[2])
                 c_label_node.appendChild(c_label_text)
 
+        # sql
+        query_node = xml.createElement('query')
+        dataset_node.appendChild(query_node)
 
+        query_text_node = xml.createElement('text')
+        query_node.appendChild(query_text_node)
 
+        query_text = xml.createCDATASection(sqlQuery[idx])
+        query_text_node.appendChild(query_text)
 
-
+    # 释放到前端的参数
+    report_parameters_node = xml.createElement('report-parameters')
+    report.appendChild(report_parameters_node)
 
     # 写好之后，就需要保存文档了
     f = open(filename + '.srdl', 'wb')
+
     f.write(xml.toprettyxml(encoding='utf-8'))
     f.close()
 

@@ -29,11 +29,20 @@
 					<label>STRING</label>
 				</column>
 			</columns>
+			<query>
+				<text>
+<![CDATA[< ![CDATA[select * from b_hospital]] >]]>				</text>
+			</query>
 		</dataset>
 		<dataset data-source-type="KYLIN" id="2">
 			<label isExpression="false">医院列表数据2</label>
 			<parameters/>
 			<columns/>
+			<query>
+				<text>
+<![CDATA[]]>				</text>
+			</query>
 		</dataset>
 	</datasets>
+	<report-parameters/>
 </report>
