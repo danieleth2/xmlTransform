@@ -210,12 +210,9 @@ def createParameter():
     # 释放到前端的参数
     report_parameters = [['regionCode', 'true', 'false', '区域代码', 'STRING', '100000', [['1', 'regionCode']]]]
 
-
     return title_description, rolemap, dataset, sqlQuery, report_parameters
 
 
 if __name__ == '__main__':
-    # 在当前目录下，创建1.xml
-
     title_description, rolemap, dataset, sqlQuery, report_parameters = createParameter()
     create_report_xml(title_description, rolemap, dataset, sqlQuery, report_parameters)
