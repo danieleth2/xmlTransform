@@ -3,25 +3,19 @@ def data_pretreatment(request):
     rolemap = request.json['rolemap']
     dataset = request.json['dataset']
     sqlQuery = request.json['sqlQuery']
-    report_parameters = request.json['report_parameters']
+    report_parameter = request.json['report_parameter']
 
     title_description = title_data(title_description)
     rolemap = role_data(rolemap)
     dataset = dataset_data(dataset)
 
+    report_parameter = parametes_data(report_parameter)
 
-    print(title_description)
-    print(rolemap)
-    print(dataset)
-    print(sqlQuery)
-    print(report_parameters)
+    return title_description, rolemap, dataset, sqlQuery, report_parameter
 
 
 def title_data(title_description):
-    title_description_list = []
-    title_description_list.append(title_description['id'])
-    title_description_list.append(title_description['title'])
-    title_description_list.append(title_description['description'])
+    title_description_list = [title_description['id'], title_description['title'], title_description['description']]
     return title_description_list
 
 
@@ -40,14 +34,11 @@ def dataset_data(dataset):
     datasets = []
     for dataset_json in dataset:
         if dataset_json:
-            dataset = []
-            dataset.append(dataset_json['id'])
-            dataset.append(dataset_json['source'])
-            dataset.append(dataset_json['label'])
+
             parameters = []
             for parameter_json in dataset_json['parameter']:
                 if parameter_json:
-                    parameter = [parameter_json['name'], parameter_json['name'], parameter_json['default_value']]
+                    parameter = [parameter_json['name'], parameter_json['datatype'], parameter_json['default_value']]
                     parameters.append(parameter)
 
             columns = []
@@ -55,13 +46,27 @@ def dataset_data(dataset):
                 if columns_json:
                     column = [columns_json['name'], columns_json['label'], columns_json['datatype']]
                     columns.append(column)
-            dataset.append(parameters)
-            dataset.append(columns)
 
-            datasets.append(dataset)
+            dataset_list = [dataset_json['id'], dataset_json['source'], dataset_json['label'], parameters, columns]
+            datasets.append(dataset_list)
     return datasets
 
 
+def parametes_data(report_parameter):
+    report_parameters = []
+    for report_parameter_json in report_parameter:
+        if report_parameter_json:
+            bindings = []
+            for binding_json in report_parameter_json['binding']:
+                if binding_json:
+                    binding = [binding_json['id'], binding_json['parameterName']]
+                    bindings.append(binding)
+            report_parameter_list = [report_parameter_json['name'], report_parameter_json['isVisible'],
+                                     report_parameter_json['isExpression'], report_parameter_json['label'],
+                                     report_parameter_json['data_type'], report_parameter_json['default_value'],
+                                     bindings]
+            report_parameters.append(report_parameter_list)
+    return report_parameters
 
 # title_description = ['ok_hospital_info_list', '医院信息列表', '医院获取详细列表']
 #

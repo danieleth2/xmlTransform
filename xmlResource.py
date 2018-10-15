@@ -1,14 +1,14 @@
 from flask import Flask, abort, request, jsonify
-import json
 from dataPretreatment import data_pretreatment
+from createReportXml import create_report_xml
 
 app = Flask(__name__)
 
 
 @app.route('/add_task/', methods=['POST'])
 def add_task():
-    data_pretreatment(request)
-
+    title_description, rolemap, dataset, sqlQuery, report_parameter = data_pretreatment(request)
+    create_report_xml(title_description, rolemap, dataset, sqlQuery, report_parameter)
     return jsonify({'result': 'success'})
 
 
