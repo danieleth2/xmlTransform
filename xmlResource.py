@@ -1,4 +1,4 @@
-# coding:utf-8
+# -*- coding: utf-8 -*-
 from flask import Flask, abort, request, jsonify
 from dataPretreatment import data_pretreatment
 from createReportXml import create_report_xml, create_files
