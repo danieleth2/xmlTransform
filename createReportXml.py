@@ -1,4 +1,4 @@
-# coding:utf-8
+# -*- coding: utf-8 -*-
 from xml.dom import minidom
 import datetime
 import os
@@ -199,6 +199,6 @@ def create_files(xml, file_name):
     f = open('xml/'+formatted_today+'/'+file_name + '.srdl', 'wb')
     f.write(xml.toprettyxml(encoding='utf-8'))
     f.close()
-    
+
 
 

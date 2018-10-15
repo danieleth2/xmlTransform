@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def data_pretreatment(request):
     title_description = request.json['title_description']
     rolemap = request.json['rolemap']
