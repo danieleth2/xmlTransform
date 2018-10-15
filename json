@@ -1,0 +1,65 @@
+{
+    "title_description": {
+        "id": "ok_hospital_info_list",
+        "title": "医院信息列表",
+        "description": "医院获取详细列表"
+    },
+    "rolemap": [
+        "OPERATOR_ADMIN",
+        "MSL_LEADER"
+    ],
+    "dataset": [
+        {
+            "id": "1",
+            "source": "NATIVE",
+            "label": "医院列表数据",
+            "parameter": [
+                {
+                    "name": "regionCode",
+                    "datatype": "STRING",
+                    "default_value": "100000"
+                },
+                {
+                    "name": "limit",
+                    "datatype": "INTEGER",
+                    "default_value": "10"
+                }
+            ],
+            "columns": [
+                {
+                    "name": "name",
+                    "label": "医院名称",
+                    "datatype": "STRING"
+                },
+                {
+                    "name": "province",
+                    "label": "省",
+                    "datatype": "STRING"
+                }
+            ]
+        },
+        {}
+    ],
+    "sqlQuery": [
+        "select * from b_hospital",
+        "select * from b_user"
+    ],
+    "report_parameter": [
+    {
+    		"name":"regionCode",
+    		"isVisible":"true",
+    		"isExpression":"false",
+    		"label":"区域代码",
+    		"data_type":"STRING",
+    		"default_value":"100000",
+    		"binding":[
+    			{
+    				"id":"1",
+    				"parameterName":"regionCode"
+    			}
+    			]
+
+    	},
+    	{}
+    	]
+}
