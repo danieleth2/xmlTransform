@@ -22,5 +22,10 @@ def download_file(filename):
     return send_from_directory(directory, filename, as_attachment=True)
 
 
+
+@app.route("/test",methods=['GET'])
+def test():
+    return jsonify({'result':'success'})
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8383, debug=True)
