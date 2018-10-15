@@ -63,3 +63,37 @@
     	{}
     	]
 }
+
+
+
+
+
+
+
+
+
+def createParameter():
+    # 输入参数
+
+    title_description = ['ok_hospital_info_list', '医院信息列表', '医院获取详细列表']
+
+    rolemap = [['运营管理员', 'OPERATOR_ADMIN'], ['省总', 'MSL_LEADER']]
+
+    # 1.dataset 的id  2.数据来源  3.label标签名称
+    # 4.parameter 数组 其中每个都有 name datatype default value
+    # 5.columns 数组  其中每个都有 name label datatype
+    dataset = [["1", 'NATIVE', '医院列表数据', [['regionCode', 'STRING', "100000"], ['limit', 'INTEGER', "10"]],
+                [['name', '医院名称', 'STRING'], ['province', '省', 'STRING']]]
+               ]
+
+    sqlQuery = ['select * from b_hospital']
+
+    # 释放到前端的参数
+    report_parameters = [['regionCode', 'true', 'false', '区域代码', 'STRING', '100000', [['1', 'regionCode']]]]
+
+    return title_description, rolemap, dataset, sqlQuery, report_parameters
+
+
+if __name__ == '__main__':
+    title_description, rolemap, dataset, sqlQuery, report_parameters = createParameter()
+    create_report_xml(title_description, rolemap, dataset, sqlQuery, report_parameters)

@@ -1,8 +1,9 @@
 # coding:utf-8
 from xml.dom import minidom
+import datetime
+import os
 
-
-# 写入xml文档的方法
+# 写入xml文档
 def create_report_xml(title_description, rolemap, dataset, sqlQuery, report_parameters):
     # 新建xml文档对象
     xml = minidom.Document()
@@ -183,36 +184,21 @@ def create_report_xml(title_description, rolemap, dataset, sqlQuery, report_para
             s_column_node.appendChild(dataset_column_name_node)
             dataset_column_name_text = xml.createTextNode(column[0])
             dataset_column_name_node.appendChild(dataset_column_name_text)
+    return xml
 
-    # 写好之后，就需要保存文档了
-    f = open(title_description[0] + '.srdl', 'wb')
 
+# 生成文件
+def create_files(xml, file_name):
+    today = datetime.date.today()
+    formatted_today = today.strftime('%y%m%d')
+
+
+    if not os.path.exists('xml/'+formatted_today):
+        os.makedirs('xml/'+formatted_today)
+
+    f = open('xml/'+formatted_today+'/'+file_name + '.srdl', 'wb')
     f.write(xml.toprettyxml(encoding='utf-8'))
     f.close()
+    
 
 
-def createParameter():
-    # 输入参数
-
-    title_description = ['ok_hospital_info_list', '医院信息列表', '医院获取详细列表']
-
-    rolemap = [['运营管理员', 'OPERATOR_ADMIN'], ['省总', 'MSL_LEADER']]
-
-    # 1.dataset 的id  2.数据来源  3.label标签名称
-    # 4.parameter 数组 其中每个都有 name datatype default value
-    # 5.columns 数组  其中每个都有 name label datatype
-    dataset = [["1", 'NATIVE', '医院列表数据', [['regionCode', 'STRING', "100000"], ['limit', 'INTEGER', "10"]],
-                [['name', '医院名称', 'STRING'], ['province', '省', 'STRING']]]
-               ]
-
-    sqlQuery = ['select * from b_hospital']
-
-    # 释放到前端的参数
-    report_parameters = [['regionCode', 'true', 'false', '区域代码', 'STRING', '100000', [['1', 'regionCode']]]]
-
-    return title_description, rolemap, dataset, sqlQuery, report_parameters
-
-
-if __name__ == '__main__':
-    title_description, rolemap, dataset, sqlQuery, report_parameters = createParameter()
-    create_report_xml(title_description, rolemap, dataset, sqlQuery, report_parameters)

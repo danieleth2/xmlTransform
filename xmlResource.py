@@ -1,17 +1,26 @@
 from flask import Flask, abort, request, jsonify
 from dataPretreatment import data_pretreatment
-from createReportXml import create_report_xml
-
+from createReportXml import create_report_xml, create_files
+from flask import send_file, send_from_directory
+import os
 app = Flask(__name__)
 
 
-@app.route('/add_task/', methods=['POST'])
+@app.route('/create/', methods=['POST'])
 def add_task():
     title_description, rolemap, dataset, sqlQuery, report_parameter = data_pretreatment(request)
-    create_report_xml(title_description, rolemap, dataset, sqlQuery, report_parameter)
-    return jsonify({'result': 'success'})
+    xml = create_report_xml(title_description, rolemap, dataset, sqlQuery, report_parameter)
+    file_name = title_description[0]
+    create_files(xml, file_name)
+    return jsonify({'result': '创建报表srdl成功，文件名为' + file_name + '.srdl'})
+
+
+@app.route("/download/<filename>", methods=['GET'])
+def download_file(filename):
+    # 需要知道2个参数, 第1个参数是本地目录的path, 第2个参数是文件名(带扩展名)
+    directory = os.getcwd('xml/181015/')  # 假设在当前目录
+    return send_from_directory(directory, filename, as_attachment=True)
 
 
 if __name__ == "__main__":
-    # 将host设置为0.0.0.0，则外网用户也可以访问到这个服务
     app.run(host="0.0.0.0", port=8383, debug=True)
