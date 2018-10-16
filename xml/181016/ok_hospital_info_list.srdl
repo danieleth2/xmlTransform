@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report height="2" id="ok_hospital_info_list" namespace="com.dzj" revision="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.sap.com/sme/occ/schema/report.xsd">
+	<title isExpression="false">医院信息列表</title>
+	<roles>
+		<role name="运营管理员" value="OPERATOR_ADMIN"/>
+		<role name="省总" value="MSL_LEADER"/>
+	</roles>
+	<description>医院获取详细列表</description>
+	<datasets>
+		<dataset data-source-type="NATIVE" id="1">
+			<label isExpression="false">医院列表数据</label>
+			<parameters>
+				<parameter name="regionCode">
+					<data-type>STRING</data-type>
+					<default-value>100000</default-value>
+				</parameter>
+				<parameter name="limit">
+					<data-type>INTEGER</data-type>
+					<default-value>10</default-value>
+				</parameter>
+			</parameters>
+			<columns>
+				<column name="name">
+					<data-type>医院名称</data-type>
+					<label>STRING</label>
+				</column>
+				<column name="province">
+					<data-type>省</data-type>
+					<label>STRING</label>
+				</column>
+			</columns>
+			<query>
+				<text>
+<![CDATA[select * from b_hospital]]>				</text>
+			</query>
+		</dataset>
+	</datasets>
+	<report-parameters>
+		<report-parameter isVisible="true" name="regionCode">
+			<label isExpression="false">区域代码</label>
+			<data-type>STRING</data-type>
+			<default-value>100000</default-value>
+			<target-bindings>
+				<target-binding id="1" parameterName="regionCode"/>
+			</target-bindings>
+		</report-parameter>
+	</report-parameters>
+	<sheet widget="table">
+		<table>
+			<declare-binding datasetid="1"/>
+			<columns>
+				<column>
+					<label>医院名称</label>
+					<dataset-column-name>name</dataset-column-name>
+				</column>
+				<column>
+					<label>省</label>
+					<dataset-column-name>province</dataset-column-name>
+				</column>
+			</columns>
+		</table>
+	</sheet>
+</report>

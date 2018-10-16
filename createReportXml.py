@@ -196,6 +196,6 @@ def create_files(xml, file_name):
     if not os.path.exists('xml/' + formatted_today):
         os.makedirs('xml/' + formatted_today)
 
-    f = open('xml/' + formatted_today + '/' + file_name + '.srdl', 'wb', None, 'utf-8')
+    f = open('xml/' + formatted_today + '/' + file_name + '.srdl', 'wb')
     f.write(xml.toprettyxml(encoding='utf-8'))
     f.close()
