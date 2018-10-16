@@ -3,6 +3,7 @@ from xml.dom import minidom
 import datetime
 import os
 
+
 # 写入xml文档
 def create_report_xml(title_description, rolemap, dataset, sqlQuery, report_parameters):
     # 新建xml文档对象
@@ -192,13 +193,9 @@ def create_files(xml, file_name):
     today = datetime.date.today()
     formatted_today = today.strftime('%y%m%d')
 
+    if not os.path.exists('xml/' + formatted_today):
+        os.makedirs('xml/' + formatted_today)
 
-    if not os.path.exists('xml/'+formatted_today):
-        os.makedirs('xml/'+formatted_today)
-
-    f = open('xml/'+formatted_today+'/'+file_name + '.srdl', 'wb')
+    f = open('xml/' + formatted_today + '/' + file_name + '.srdl', 'wb', None, 'utf-8')
     f.write(xml.toprettyxml(encoding='utf-8'))
     f.close()
-
-
-
