@@ -21,7 +21,8 @@ def title_data(title_description):
 
 
 def role_data(rolemap):
-    role_all = {'OPERATOR_ADMIN': '运营管理员', 'MSL_LEADER': '省总'}
+    role_all = {'OPERATOR_ADMIN': '运营管理员', 'MSL_LEADER': '省总', 'OPERATOR': '运营人员', 'ALL': '所有人',
+                'ENTERPRISE_OPERATOR': '企业管理员', 'DOCTOR': '医生', 'MSL': '联络员'}
     role_all_list = []
     for role in rolemap:
         if role:
