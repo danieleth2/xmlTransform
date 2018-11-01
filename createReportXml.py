@@ -110,8 +110,8 @@ def create_report_xml(title_description, rolemap, dataset, sqlQuery, report_para
 
         query_text_node = xml.createElement('text')
         query_node.appendChild(query_text_node)
-
-        query_text = xml.createCDATASection(sqlQuery[idx])
+        if sqlQuery:
+            query_text = xml.createCDATASection(sqlQuery[idx])
         query_text_node.appendChild(query_text)
 
     # 释放到前端的参数
