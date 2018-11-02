@@ -46,7 +46,7 @@ def dataset_data(dataset):
             columns = []
             for columns_json in dataset_json['columns']:
                 if columns_json:
-                    column = [columns_json['name'], columns_json['label'], columns_json['datatype']]
+                    column = [columns_json['name'], columns_json['datatype'], columns_json['label']]
                     columns.append(column)
 
             dataset_list = [dataset_json['id'], dataset_json['source'], dataset_json['label'], parameters, columns]
