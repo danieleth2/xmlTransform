@@ -70,6 +70,30 @@ def parametes_data(report_parameter):
             report_parameters.append(report_parameter_list)
     return report_parameters
 
+
+def dataset_pretreatment(request):
+    dataset_json = request.json['dataset']
+
+    if dataset_json:
+
+        parameters = []
+        for parameter_json in dataset_json['parameter']:
+            if parameter_json:
+                parameter = [parameter_json['name'], parameter_json['datatype'], parameter_json['default_value']]
+                parameters.append(parameter)
+
+        columns = []
+        for columns_json in dataset_json['columns']:
+            if columns_json:
+                column = [columns_json['name'], columns_json['datatype'], columns_json['label']]
+                columns.append(column)
+
+        dataset = [dataset_json['id'], dataset_json['source'], dataset_json['label'], parameters, columns]
+
+    sqlQuery = request.json['sqlQuery']
+
+    return dataset, sqlQuery
+
 # title_description = ['ok_hospital_info_list', '医院信息列表', '医院获取详细列表']
 #
 # rolemap = [['运营管理员', 'OPERATOR_ADMIN'], ['省总', 'MSL_LEADER']]
