@@ -5,7 +5,7 @@ import os
 
 
 # 写入xml文档
-def create_report_xml(title_description, rolemap, dataset, sqlQuery, report_parameters):
+def create_report_xml(title_description, dataset, sqlQuery, report_parameters):
     # 新建xml文档对象
     xml = minidom.Document()
 
@@ -27,21 +27,27 @@ def create_report_xml(title_description, rolemap, dataset, sqlQuery, report_para
     report.appendChild(title_node)
     title_text = xml.createTextNode(title_description[1])
     title_node.appendChild(title_text)
+    #
+    # # 报表权限控制
+    # if rolemap:
+    #     roles_node = xml.createElement('roles')
+    #     report.appendChild(roles_node)
+    #     for key in rolemap:
+    #         role_node = xml.createElement('role')
+    #         role_node.setAttribute('name', key[0])
+    #         role_node.setAttribute('value', key[1])
+    #         roles_node.appendChild(role_node)
 
-    # 报表权限控制
-    if rolemap:
-        roles_node = xml.createElement('roles')
-        report.appendChild(roles_node)
-        for key in rolemap:
-            role_node = xml.createElement('role')
-            role_node.setAttribute('name', key[0])
-            role_node.setAttribute('value', key[1])
-            roles_node.appendChild(role_node)
+    # 报表privacyLevel
+    privacyLevel_node = xml.createElement('privacyLevel')
+    report.appendChild(privacyLevel_node)
+    privacyLevel_text = xml.createTextNode(title_description[2])
+    privacyLevel_node.appendChild(privacyLevel_text)
 
     # 报表描述
     description_node = xml.createElement('description')
     report.appendChild(description_node)
-    description = xml.createTextNode(title_description[2])
+    description = xml.createTextNode(title_description[3])
     description_node.appendChild(description)
 
     # 报表datasets
@@ -113,8 +119,6 @@ def create_report_xml(title_description, rolemap, dataset, sqlQuery, report_para
         if sqlQuery:
             query_text = xml.createCDATASection(sqlQuery[idx])
             query_text_node.appendChild(query_text)
-
-
 
     # 释放到前端的参数
     report_parameters_node = xml.createElement('report-parameters')

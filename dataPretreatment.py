@@ -1,36 +1,37 @@
 # -*- coding: utf-8 -*-
 def data_pretreatment(request):
     title_description = request.json['title_description']
-    rolemap = request.json['rolemap']
+    # rolemap = request.json['rolemap']
     dataset = request.json['dataset']
     sqlQuery = request.json['sqlQuery']
     report_parameter = request.json['report_parameter']
 
     title_description = title_data(title_description)
-    rolemap = role_data(rolemap)
+    # rolemap = role_data(rolemap)
     dataset = dataset_data(dataset)
 
     report_parameter = parametes_data(report_parameter)
 
-    return title_description, rolemap, dataset, sqlQuery, report_parameter
+    return title_description, dataset, sqlQuery, report_parameter
 
 
 def title_data(title_description):
-    title_description_list = [title_description['id'], title_description['title'], title_description['description']]
+    title_description_list = [title_description['id'], title_description['title'], title_description['privacyLevel'],
+                              title_description['description']]
     return title_description_list
 
 
-def role_data(rolemap):
-    role_all = {'OPERATOR_ADMIN': '运营管理员', 'MSL_LEADER': '省总', 'OPERATOR': '运营人员', 'ALL': '所有人',
-                'ENTERPRISE_OPERATOR': '企业管理员', 'DOCTOR': '医生', 'MSL': '联络员'}
-    role_all_list = []
-    for role in rolemap:
-        if role:
-            role_name = role_all[role]
-            role_list = [role_name, role]
-            role_all_list.append(role_list)
-    return role_all_list
-
+# def role_data(rolemap):
+#     role_all = {'OPERATOR_ADMIN': '运营管理员', 'MSL_LEADER': '省总', 'OPERATOR': '运营人员', 'ALL': '所有人',
+#                 'ENTERPRISE_OPERATOR': '企业管理员', 'DOCTOR': '医生', 'MSL': '联络员'}
+#     role_all_list = []
+#     for role in rolemap:
+#         if role:
+#             role_name = role_all[role]
+#             role_list = [role_name, role]
+#             role_all_list.append(role_list)
+#     return role_all_list
+#
 
 def dataset_data(dataset):
     datasets = []
